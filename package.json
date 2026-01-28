@@ -1,0 +1,29 @@
+{
+  "name": "sql-execution-engine",
+  "version": "1.0.0",
+  "description": "a microservice for sql execution",
+  "homepage": "https://github.com/aditya06121/sql-execution-engine#readme",
+  "bugs": {
+    "url": "https://github.com/aditya06121/sql-execution-engine/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aditya06121/sql-execution-engine.git"
+  },
+  "license": "ISC",
+  "author": "aditya",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
