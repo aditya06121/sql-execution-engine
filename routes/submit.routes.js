@@ -1,9 +1,15 @@
 import { Router } from "express";
 
-import { submitCode } from "../controller/submit.controller.js";
+import {
+  executeSql,
+  submitSql,
+  resetQuestion,
+} from "../controller/submit.controller.js";
 
 const submitRouter = Router();
 
-submitRouter.route("/submit").post(submitCode); //middleware for authentication can be added here
+submitRouter.route("/execute").post(executeSql);
+submitRouter.route("/submit").post(submitSql);
+submitRouter.route("/reset").post(resetQuestion);
 
 export default submitRouter;
