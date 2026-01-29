@@ -86,7 +86,8 @@ This endpoint is intended for iterative query testing and exploration.
 ```json
 {
   "success": true,
-  "output": [{ "cnt": 6 }]
+  "output": [{ "cnt": 6 }],
+  "outputs": [[{ "cnt": 6 }]]
 }
 ```
 
@@ -179,8 +180,9 @@ This endpoint destroys the current database and removes all user mutations.
 - Only validated SQL is executed
 - Dangerous commands such as ATTACH, PRAGMA modification, system access, and file operations are blocked
 - Multiple SQL statements are allowed
-- Only the result of the last SELECT statement is returned
-- If no SELECT is present, output is an empty array
+- Results of all SELECT statements are captured in an `outputs` array (in execution order)
+- The `output` field remains for backward compatibility and contains the last SELECT's result
+- If no SELECT is present, `outputs` is an empty array and `output` is an empty array
 
 ---
 

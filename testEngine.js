@@ -5,7 +5,7 @@ import { SqliteExecutionEngine } from "./engine/SqliteExecutionEngine.js";
 // Load seed SQL
 const seedSql = fs.readFileSync(
   path.join(process.cwd(), "engine", "seed.sql"),
-  "utf8"
+  "utf8",
 );
 
 async function runTest() {
@@ -30,7 +30,7 @@ async function runTest() {
   result = await engine.execute(["SELECT COUNT(*) AS cnt FROM employees"]);
   console.log(result);
 
-  console.log("\n🔹 Test 3: Last SELECT only");
+  console.log("\n🔹 Test 3: Capture all SELECT results");
   result = await engine.execute([
     "SELECT name FROM employees WHERE id = 1",
     "SELECT name FROM employees WHERE id = 2",

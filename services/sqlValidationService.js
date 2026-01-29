@@ -74,23 +74,25 @@ export function validateSql(sql) {
     throw new SqlValidationError("SQL input is too large");
   }
 
-  const normalized = normalizeSql(sql);
+  // Use a comment-stripped but CASE-PRESERVING version to extract statements
+  const stripped = stripComments(sql).replace(/\s+/g, " ").trim();
+  const normalized = stripped.toLowerCase();
 
-  if (!normalized) {
+  if (!stripped) {
     throw new SqlValidationError("Empty SQL statement");
   }
 
-  // Statement count limit
-  const statements = splitStatements(normalized);
+  // Statement count limit (use case-preserving statements so we don't mangle string literals)
+  const statements = splitStatements(stripped);
   if (statements.length > MAX_STATEMENTS) {
     throw new SqlValidationError("Too many SQL statements");
   }
 
-  // Block dangerous patterns
+  // Block dangerous patterns against normalized SQL
   for (const pattern of BLOCKED_PATTERNS) {
     if (pattern.test(normalized)) {
       throw new SqlValidationError(
-        "This SQL command is not allowed in the execution environment"
+        "This SQL command is not allowed in the execution environment",
       );
     }
   }

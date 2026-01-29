@@ -43,9 +43,18 @@ export const executeSql = async (req, res) => {
       });
     }
 
+    // Normalize last output for compatibility
+    const normalizedOutput = normalizeResult(result.output);
+
+    // Normalize all outputs (if any) so clients can inspect every SELECT
+    const normalizedOutputs = (result.outputs || []).map((r) =>
+      normalizeResult(r),
+    );
+
     return res.status(200).json({
       success: true,
-      output: normalizeResult(result.output),
+      output: normalizedOutput,
+      outputs: normalizedOutputs,
     });
   } catch (err) {
     return res.status(500).json({
@@ -96,10 +105,16 @@ export const submitSql = async (req, res) => {
     const normalizedActual = normalizeResult(execution.output);
     const comparison = compareResults(expectedOutput, normalizedActual);
 
+    // Also include all outputs for inspection
+    const normalizedOutputs = (execution.outputs || []).map((r) =>
+      normalizeResult(r),
+    );
+
     return res.status(200).json({
       passed: comparison.passed,
       reason: comparison.reason ?? null,
       actualOutput: normalizedActual,
+      actualOutputs: normalizedOutputs,
     });
   } catch (err) {
     return res.status(500).json({

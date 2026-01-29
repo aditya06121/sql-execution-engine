@@ -62,6 +62,7 @@ export class SqliteExecutionEngine {
     }
 
     this.lastSelectResult = null;
+    const selectResults = [];
 
     try {
       for (const stmt of statements) {
@@ -70,7 +71,9 @@ export class SqliteExecutionEngine {
           trimmed.startsWith("select") || trimmed.startsWith("with");
 
         if (isSelect) {
-          this.lastSelectResult = this.db.prepare(stmt).all();
+          const rows = this.db.prepare(stmt).all();
+          selectResults.push(rows);
+          this.lastSelectResult = rows;
         } else {
           this.db.exec(stmt);
         }
@@ -78,13 +81,17 @@ export class SqliteExecutionEngine {
 
       return {
         success: true,
+        // Backwards compatible single-output in `output`
         output: this.lastSelectResult ?? [],
+        // New: all SELECT responses in order
+        outputs: selectResults,
         error: null,
       };
     } catch (err) {
       return {
         success: false,
         output: null,
+        outputs: null,
         error: err.message,
       };
     }

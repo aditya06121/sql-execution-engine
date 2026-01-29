@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 6060;
 //console.log(PORT);
 
 import app from "./app.js";
