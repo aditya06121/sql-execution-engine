@@ -16,7 +16,7 @@ COPY . .
 RUN mkdir -p /app/tmp
 
 # Expose application port
-EXPOSE 3000
+EXPOSE 6060
 
 # Start the server
 CMD ["node", "index.js"]
