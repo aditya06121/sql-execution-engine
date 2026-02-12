@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 6060;
 import app from "./app.js";
 
 try {
-  app.listen(PORT, () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`The server is running on port ${PORT}`);
   });
 } catch {
