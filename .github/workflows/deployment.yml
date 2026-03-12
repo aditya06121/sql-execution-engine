@@ -31,7 +31,7 @@ jobs:
 
         steps:
             - name: Deploy container
-              shell: pwsh
+              shell: powershell
               run: |
                   docker pull gisul/sql-execution-engine:latest
                   docker rm -f sql-execution-engine 2>$null
