@@ -25,11 +25,11 @@ jobs:
 
     deploy:
         needs: build
-        runs-on: [self-hosted, serve]
+        runs-on: self-hosted
 
         steps:
             - name: Deploy container
               run: |
                   docker pull gisul/sql-execution-engine:latest
-                  docker rm -f sql-execution-engine -ErrorAction SilentlyContinue
+                  docker rm -f sql-execution-engine 2>nul
                   docker run -d -p 6060:6060 --name sql-execution-engine --restart unless-stopped gisul/sql-execution-engine:latest
