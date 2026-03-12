@@ -31,5 +31,5 @@ jobs:
             - name: Deploy container
               run: |
                   docker pull gisul/sql-execution-engine:latest
-                  docker rm -f sql-execution-engine || true
+                  docker rm -f sql-execution-engine -ErrorAction SilentlyContinue
                   docker run -d -p 6060:6060 --name sql-execution-engine --restart unless-stopped gisul/sql-execution-engine:latest
