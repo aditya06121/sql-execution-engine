@@ -34,16 +34,27 @@ jobs:
         runs-on: [self-hosted, windows]
 
         steps:
-            - name: Deploy container
+            - name: Deploy container in WSL
               shell: powershell
+              env:
+                  IMAGE_NAME: gisul/sql-execution-engine:latest
+                  CONTAINER_NAME: sql-execution-engine
+                  HOST_PORT: "6060"
+                  CONTAINER_PORT: "6060"
+                  # Optional: define this as a repo/org variable to pin distro (e.g. "Ubuntu")
+                  WSL_DISTRO: ${{ vars.WSL_DISTRO_NAME }}
               run: |
-                  docker pull gisul/sql-execution-engine:latest
+                  $ErrorActionPreference = "Stop"
 
-                  $container = docker ps -a --filter "name=sql-execution-engine" --format "{{.Names}}"
-
-                  if ($container) {
-                      docker stop sql-execution-engine
-                      docker rm sql-execution-engine
+                  $distro = "${env:WSL_DISTRO}"
+                  if (-not $distro) {
+                      $distro = (wsl -l -q | Where-Object { $_ -and $_ -notmatch "docker-desktop" } | Select-Object -First 1).Trim()
                   }
 
-                  docker run -d -p 6060:6060 --name sql-execution-engine --restart unless-stopped gisul/sql-execution-engine:latest
+                  if (-not $distro) {
+                      throw "No WSL distro found. Set repository variable WSL_DISTRO_NAME (for example: Ubuntu)."
+                  }
+
+                  Write-Host "Deploying in WSL distro: $distro"
+
+                  wsl -d $distro -- bash -lc 'set -euo pipefail; if ! command -v docker >/dev/null 2>&1; then echo "docker command not found in WSL distro" >&2; exit 1; fi; docker pull "$IMAGE_NAME"; existing=$(docker ps -aq -f "name=^$CONTAINER_NAME$"); if [ -n "$existing" ]; then docker stop "$CONTAINER_NAME" || true; docker rm "$CONTAINER_NAME"; fi; docker run -d --name "$CONTAINER_NAME" --restart unless-stopped -p "$HOST_PORT:$CONTAINER_PORT" "$IMAGE_NAME"'
